@@ -1,33 +1,24 @@
 import requests
-
-# title - Название места. Может содержать латинские и кириллические символы, цифры и знаки
-#препинания. Минимальная длина — 1 символ. Максимальная длина — 999 символов
-
-#lat - Широта (latitude) места
-
-#lon - Долгота (longitude) места
-
-#color - Цвет иконки места. Может принимать значения: BLUE, GREEN, RED, YELLOW
-
-#автотест = ф-ия отправки запроса + тест
+from requests import cookies
 
 def get_token(s):
-
     request = s.post('https://regions-test.2gis.com/v1/auth/tokens')
     dict_cookie = requests.utils.dict_from_cookiejar(request.cookies)
-    token = dict_cookie['token']
-    return token
+    return dict_cookie #токен в виде словаря {'token': 'значение_токена', 'date': 'время создания'}
 
+
+def create_place(token, data): 
+    cookies = { 'token' : token }
+    r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = cookies, data=data)
+    return r.json()
 
 s = requests.Session()
-
-cookies = { 'token': get_token(s) }
-
 data = {
-    'title' : 'Камень',
-    'lat': '55.036500',
-    'lon': '82.925642'
+    'title' : 'Камень',     # title - Название места. Может содержать латинские и кириллические символы, цифры и знаки
+                            #препинания. Минимальная длина — 1 символ. Максимальная длина — 999 символов
+    'lat': '55.036500',    #lat - Широта (latitude) места
+    'lon': '82.925642',    #lon - Долгота (longitude) места
+    'color': 'BLUE'        #color - Цвет иконки места. Может принимать значения: BLUE, GREEN, RED, YELLOW
     }
-
-r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies=cookies, data=data)
-print(r.json())
+dict_token = get_token(s)
+print(create_place(dict_token['token'], data))
