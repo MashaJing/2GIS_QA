@@ -1,3 +1,5 @@
+import datetime
+#import traceback
 import requests
 from requests import cookies
 
@@ -9,8 +11,8 @@ def get_token(s):
 
 
 def create_place(token, data): 
-    #cookies = { 'token' : token }
     r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = token, data=data)
+    
     return r.json()
 
 '''
@@ -24,5 +26,6 @@ data = {
     }
 token = get_token(s)
 dict_res = create_place(token, data)
-print(dict_res.keys())
+print(dict_res['created_at'])
+print(datetime.datetime.now().isoformat())
 '''

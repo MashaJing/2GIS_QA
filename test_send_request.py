@@ -9,8 +9,7 @@ class TestCreatePlace(unittest.TestCase):
         self.data = {
         'title' : 'Камень',
         'lat': '55.036500', 
-        'lon': '82.925642',
-        'color': 'blue' 
+        'lon': '82.925642'
         }
 
     def test_request(self):
@@ -21,22 +20,16 @@ class TestCreatePlace(unittest.TestCase):
         self.assertEqual(dict_res['lon'], float(self.data['lon']))
         self.assertEqual(dict_res['lat'],  float(self.data['lat']))
         self.assertEqual(dict_res['title'], self.data['title'])
-        print(dict_res['created_at'] + '!!!!!!!!!!!!') #дата?
-        #self.assertAlmostEqual(dict_res['created_at'], datetime.datetime.now().isoformat())
-
+        
     def test_id(self):
         s = requests.Session()
         token = get_token(s)
-        data = {
-        'title' : 'Камень',
-        'lat': '55.036500', 
-        'lon': '82.925642',
-        'color': 'blue' 
-        }
+        self.data_init()
+        
         dict_res = []
-        dict_res.append(create_place(token, data))
+        dict_res.append(create_place(token, self.data))
         for i in range(9):
-            dict_res.append(create_place(token, data))
+            dict_res.append(create_place(token, self.data))
             self.assertGreater(dict_res[i+1]['id'], dict_res[i]['id'])
 
 
@@ -132,5 +125,39 @@ class TestCreatePlace(unittest.TestCase):
         self.data['lat'] = 180      #широта в диапазоне [-90; 90]
         dict_res = create_place(token, self.data)
         self.assertIn('error', dict_res.keys())
+
+    #def test_date(self):
+     #   s = requests.Session()
+     #   token = get_token(s)
+        
+     #   self.data_init()
+        
+     #   dict_res = create_place(token, self.data)
+     #   self.assertEqual(str(datetime.datetime.now), dict_res['created_at'])
+
+    def test_color(self):
+        s = requests.Session()
+        token = get_token(s)
+        
+        self.data_init()
+        colors = ['blue',  'green', 'red', 'yellow', 'BLUE', 'GREEN', 'RED', 'YELLOW', None]
+        for color in colors:
+            self.data['color'] = color
+            dict_res = create_place(token, self.data)
+            self.assertEqual(dict_res['color'], color)
+        
+        colors_wrong = [ 'darkgreen', 'chocolate', 'brown', 'black', 'gray', 'white'] #'#FFFFFF', '0', 'grey', 'pink', 'gold', 'orange', 'maroon', 'violet', 'magenta', 'purple', 'navy', 'skyblue', 'cyan', 'turquoise', 'lightgreen', 
+        for color in colors_wrong:
+            self.data['color'] = color
+            dict_res = create_place(token, self.data)
+            print(dict_res)
+            #self.assertIn('error', dict_res.keys())
+        
+        
+
+
+
+
+
         
 #def check_token():
