@@ -26,12 +26,11 @@ def refresh_token(func):
 
 @refresh_token
 def create_place(dict_token, data): 
-    print("GOT ACCESSS WITH " + dict_token['token'])
     cookies = {'token' : dict_token['token'] } #??
     r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = cookies, data=data)
     
     return r.json()
-
+'''
 s = requests.Session()
 data = {
     'title' : 'Камень',     # title - Название места. Может содержать латинские и кириллические символы, цифры и знаки
@@ -46,3 +45,4 @@ print(dict_res)
 time.sleep(1)
 dict_res = create_place(token, data)
 print(dict_res)
+'''

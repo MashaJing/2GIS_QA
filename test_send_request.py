@@ -86,6 +86,11 @@ class TestCreatePlace(unittest.TestCase):
         dict_res = create_place(token, self.data)
         self.assertEqual(dict_res['title'], self.data['title']) 
 
+        self.data_init()
+        self.data['title'] = '!@#$%^&*()_+=-\|\|''//?.,;[]{`~'
+        dict_res = create_place(token, self.data)
+        self.assertEqual(dict_res['title'], self.data['title']) 
+
 
     def test_lon(self):
         s = requests.Session()
@@ -146,18 +151,11 @@ class TestCreatePlace(unittest.TestCase):
             dict_res = create_place(token, self.data)
             self.assertEqual(dict_res['color'], color)
         
-        #colors_wrong = [ 'darkgreen', 'chocolate', 'brown', 'black', 'gray', 'white'] #'#FFFFFF', '0', 'grey', 'pink', 'gold', 'orange', 'maroon', 'violet', 'magenta', 'purple', 'navy', 'skyblue', 'cyan', 'turquoise', 'lightgreen', 
-        #for color in colors_wrong:
-            #self.data['color'] = color
-            #dict_res = create_place(token, self.data)
-            #print(dict_res)
-            #self.assertIn('error', dict_res.keys()) #может быть brown
-        
+        colors_wrong = [ 'darkgreen', 'chocolate', 'black', 'gray', '#FFFFFF', '0', 'grey', 'pink', 'gold', 'orange', 'maroon', 'violet', 'magenta', 'purple', 'navy', 'skyblue', 'cyan', 'turquoise', 'lightgreen', 'white']
+        for color in colors_wrong:
+           self.data['color'] = color
+           dict_res = create_place(token, self.data)
+           self.assertIn('error', dict_res.keys()) #может быть brown
         
 
-
-
-
-
-        
 #def check_token():
