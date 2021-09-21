@@ -12,13 +12,12 @@ def get_token(s):
     return dict_cookie #токен в виде словаря {'token': 'значение_токена', 'time' : время получения токена}
 
 def refresh_token(func):
-    def wrapper(token, data):
+    def wrapper(s, token, data):
         if time.time() - token['time'] < 1.6: #если от получения токена прошло менее 1.6 с
             #выполняем с тем же токеном
             return func(token, data)
         else:
             # миначе обращаемся к функции и получаем новый токен
-            s = requests.Session()
             new_token = get_token(s)
             # обновив токен, пытаемся повторить действие
             return func(new_token, data)
@@ -26,10 +25,11 @@ def refresh_token(func):
 
 @refresh_token
 def create_place(dict_token, data): 
-    cookies = {'token' : dict_token['token'] } #??
+    cookies = {'token' : dict_token['token'] }
     r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = cookies, data=data)
     
     return r.json()
+
 '''
 s = requests.Session()
 data = {
@@ -40,9 +40,9 @@ data = {
     'color': 'BLUE'        #color - Цвет иконки места. Может принимать значения: BLUE, GREEN, RED, YELLOW
     }
 token = get_token(s)
-dict_res = create_place(token, data)
+dict_res = create_place(s, token, data)
 print(dict_res)
-time.sleep(1)
-dict_res = create_place(token, data)
+time.sleep(2)
+dict_res = create_place(s, token, data)
 print(dict_res)
 '''
