@@ -27,6 +27,7 @@ def refresh_token(func):
 def create_place(dict_token, data): 
     cookies = {'token' : dict_token['token'] }
     r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = cookies, data=data)
+    
     if r.status_code != 200:
         raise ConnectionError
     return r.json()
