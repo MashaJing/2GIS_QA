@@ -13,11 +13,11 @@ def get_token(s):
 
 def refresh_token(func):
     def wrapper(s, token, data):
-        if time.time() - token['time'] < 1.6: #если от получения токена прошло менее 1.6 с
+        if time.time() - token['time'] < 1.6: #если от получения токена прошло менее 2 секунд с учетом погрешности
             #выполняем с тем же токеном
             return func(token, data)
         else:
-            # миначе обращаемся к функции и получаем новый токен
+            # иначе обращаемся к функции и получаем новый токен
             new_token = get_token(s)
             # обновив токен, пытаемся повторить действие
             return func(new_token, data)
@@ -27,7 +27,8 @@ def refresh_token(func):
 def create_place(dict_token, data): 
     cookies = {'token' : dict_token['token'] }
     r = requests.post('https://regions-test.2gis.com/v1/favorites', cookies = cookies, data=data)
-    
+    if r.status_code != 200:
+        raise ConnectionError
     return r.json()
 
 '''
